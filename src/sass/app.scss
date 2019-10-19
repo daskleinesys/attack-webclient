@@ -1,0 +1,8 @@
+@import '~bootstrap/scss/functions';
+@import './partials/bootstrap-variable-override';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-vue/src/index.scss';
+
+@import './partials/mixins';
+@import './partials/base';
+@import './partials/layout';

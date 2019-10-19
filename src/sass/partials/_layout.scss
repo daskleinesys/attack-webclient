@@ -1,0 +1,12 @@
+html {
+  height: 100%;
+  overflow: hidden; /* tooltip placement fix */
+}
+
+body {
+  height: 100%;
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}

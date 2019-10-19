@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600|Source+Sans+Pro:400i');
+
+body, html {
+  font-size: 14px;
+  font-family: 'Open Sans', sans-serif;
+  line-height: normal;
+}
+
+::placeholder {
+  font-style: italic;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance:textfield;
+}

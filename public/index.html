@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>Attack Online</title>
+</head>
+<body>
+<noscript>
+  <strong>We're sorry but Attack Online doesn't work properly without JavaScript enabled. Please enable it to
+    continue.</strong>
+</noscript>
+<div id="app">
+  <style>
+  #app > svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-animation: logo-loading 3s infinite; /* Safari 4+ */
+    -moz-animation:    logo-loading 3s infinite; /* Fx 5+ */
+    -o-animation:      logo-loading 3s infinite; /* Opera 12+ */
+    animation:         logo-loading 3s infinite; /* IE 10+, Fx 29+ */
+  }
+
+  @-webkit-keyframes logo-loading {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(2);
+    }
+    100% {
+      opacity: 0.3;
+      transform: translate(-50%, -50%) scale(4);
+    }
+  }
+
+  @-moz-keyframes logo-loading {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(2);
+    }
+    100% {
+      opacity: 0.3;
+      transform: translate(-50%, -50%) scale(4);
+    }
+  }
+
+  @-o-keyframes logo-loading {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(2);
+    }
+    100% {
+      opacity: 0.3;
+      transform: translate(-50%, -50%) scale(4);
+    }
+  }
+
+  @keyframes logo-loading {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(2);
+    }
+    100% {
+      opacity: 0.3;
+      transform: translate(-50%, -50%) scale(4);
+    }
+  }
+  </style>
+</div>
+</body>
+</html>
