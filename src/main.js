@@ -29,13 +29,29 @@ Vue.filter('numbro', (value, options) => {
   if (Number.isNaN(value)) {
     return null;
   }
-  return numbro(Number(value)).format(options);
+  return numbro(Number(value))
+    .format(options);
 });
 
 /**
  * add axios interceptor to check for logout
  */
 axios.defaults.baseURL = origin;
+axios.interceptors.request.use((config) => {
+  const headers = {
+    'content-type': 'application/json',
+  };
+  if (store.state.auth.token != null) {
+    headers.Authorization = `Bearer ${store.state.auth.token}`;
+  }
+  return {
+    ...config,
+    headers: {
+      ...config.headers,
+      ...headers,
+    },
+  };
+});
 
 /**
  * start app
