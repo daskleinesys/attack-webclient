@@ -1,3 +1,4 @@
+import Dashboard from '@/layout/components/Dashboard.vue';
 import Home from '@/layout/components/Home.vue';
 import NotFound from '@/layout/components/NotFound.vue';
 import router from '@/router';
@@ -12,7 +13,16 @@ router.addRoutes([
     component: Home,
     meta: {
       requiresAuth: false,
-      label: 'HOME',
+      label: 'Home',
+    },
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+    meta: {
+      requiresAuth: true,
+      label: 'Dashboard',
     },
   },
   /*

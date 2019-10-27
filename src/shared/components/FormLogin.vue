@@ -83,6 +83,9 @@ export default {
       });
       this.username = null;
       this.password = null;
+      if (this.$store.state.auth.user != null) {
+        this.$router.push('dashboard');
+      }
     },
   },
 };
