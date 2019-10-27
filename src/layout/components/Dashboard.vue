@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dashboard">
     <UserStatus/>
   </div>
 </template>
@@ -16,5 +16,7 @@ export default {
 </script>
 
 <style scoped>
-
+.dashboard {
+  padding: 20px 30px;
+}
 </style>

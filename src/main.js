@@ -2,6 +2,7 @@ import axios from 'axios';
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
 import numbro from 'numbro';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // do not change order of the following imports (to avoid circular imports)
 import router from '@/router';
@@ -17,6 +18,7 @@ import App from '@/App.vue';
  */
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
+Vue.component('FontAwesomeIcon', FontAwesomeIcon);
 
 /**
  * setup numbro

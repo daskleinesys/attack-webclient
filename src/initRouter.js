@@ -2,6 +2,7 @@ import Dashboard from '@/layout/components/Dashboard.vue';
 import Home from '@/layout/components/Home.vue';
 import NotFound from '@/layout/components/NotFound.vue';
 import router from '@/router';
+import Editor from '@/editor/Editor.vue';
 
 router.addRoutes([
   /*
@@ -12,6 +13,7 @@ router.addRoutes([
     name: 'home',
     component: Home,
     meta: {
+      navigation: false,
       requiresAuth: false,
       label: 'Home',
     },
@@ -21,8 +23,19 @@ router.addRoutes([
     name: 'dashboard',
     component: Dashboard,
     meta: {
+      navigation: true,
       requiresAuth: true,
       label: 'Dashboard',
+    },
+  },
+  {
+    path: '/admin/editor',
+    name: 'editor',
+    component: Editor,
+    meta: {
+      navigation: true,
+      requiresAuth: true,
+      label: 'Editor',
     },
   },
   /*
