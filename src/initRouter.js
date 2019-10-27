@@ -3,6 +3,7 @@ import Home from '@/layout/components/Home.vue';
 import NotFound from '@/layout/components/NotFound.vue';
 import router from '@/router';
 import Editor from '@/editor/Editor.vue';
+import store from '@/store';
 
 router.addRoutes([
   /*
@@ -55,6 +56,8 @@ router.beforeEach((to, from, next) => {
   if (!to.matched.some(record => record.meta.requiresAuth)) {
     return next();
   }
-  // check auth here
+  if (!store.state.auth.user) {
+    return next({ name: 'home' });
+  }
   return next();
 });
