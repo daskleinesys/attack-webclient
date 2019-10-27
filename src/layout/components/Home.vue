@@ -1,41 +1,48 @@
 <template>
-  <div>
-    <h1>Home</h1>
-    <h5 v-if="$store.state.auth.fetching">
-      loading ...
-    </h5>
-    <BButton
-      v-else-if="$store.state.auth.user == null"
-      @click="$store.dispatch('auth/login')"
-    >
-      login
-    </BButton>
-    <div v-else>
-      <h5>
-        Hello {{ $store.state.auth.user }}!
-      </h5>
-      <BButton
-        @click="checkBE"
-      >
-        check BE status
-      </BButton>
-    </div>
+  <div class="home">
+    <aside class="home__aside bg-light">
+      <h1 class="home__title">Attack Online</h1>
+    </aside>
+    <main class="home__content">
+      <FormLogin v-if="$store.state.auth.user == null"/>
+      <UserStatus v-else/>
+    </main>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import FormLogin from '@/shared/components/FormLogin.vue';
+import UserStatus from '@/shared/components/UserStatus.vue';
 
 export default {
   name: 'Home',
-  methods: {
-    checkBE() {
-      axios.get('http://localhost/api/me');
-    },
+  components: {
+    UserStatus,
+    FormLogin
   },
 };
 </script>
 
 <style scoped>
+.home {
+  display: flex;
+  flex: 1;
+}
 
+.home__aside {
+  position: relative;
+  width: 50%;
+}
+
+.home__title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.home__content {
+  flex: 1;
+  padding: 100px 50px;
+}
 </style>

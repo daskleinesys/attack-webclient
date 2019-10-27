@@ -23,16 +23,23 @@ export default {
     },
   },
   actions: {
-    async login({ state, commit }) {
+    async login({ state, commit, dispatch }, { username, password }) {
       if (state.fetching) {
         return;
       }
       commit('startFetching');
-      const { data } = await axios('http://localhost:3000/');
-      commit('setUser', {
-        user: 'test',
-        token: data,
-      });
+      try {
+        const { data } = await axios.post('http://localhost:3000/login', {
+          username,
+          password,
+        });
+        commit('setUser', {
+          user: username,
+          token: data,
+        });
+      } catch (e) {
+        dispatch('logout');
+      }
     },
     logout({ commit }) {
       commit('setUser', {
