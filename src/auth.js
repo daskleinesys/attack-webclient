@@ -1,13 +1,16 @@
 import axios from 'axios';
 import Vue from 'vue';
 
-export function initialState() {
-  return {
-    fetching: false,
-    user: null,
-    token: null,
-  };
-}
+export const reducer = state => ({
+  user: state.user,
+  token: state.token,
+});
+
+export const initialState = () => ({
+  fetching: false,
+  user: null,
+  token: null,
+});
 
 export default {
   namespaced: true,
