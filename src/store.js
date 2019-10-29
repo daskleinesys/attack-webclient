@@ -28,7 +28,7 @@ export default new Vuex.Store({
   },
   getters: {
     // DATA
-    areas: state => state.areas.data,
+    areas: state => state.areas,
   },
   plugins: [persistAuth.plugin],
 });
