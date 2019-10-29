@@ -70,8 +70,5 @@ export function subscribableDataStore(dataUrl) {
         commit('finishFetching');
       },
     },
-    getters: {
-      byId: state => state.byId,
-    },
   };
 }
