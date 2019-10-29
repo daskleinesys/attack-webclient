@@ -46,6 +46,14 @@ import { mapGetters } from 'vuex';
 import MapItemTooltip from '@/shared/components/MapItemTooltip.vue';
 import googleMapsApi from '@/shared/modules/googleMapsApi';
 
+const polygonOptions = {
+  strokeColor: 'black',
+  strokeOpacity: 1,
+  strokeWeight: 2,
+  fillColor: 'gray',
+  fillOpacity: 0.8,
+};
+
 export default {
   name: 'Editor',
   data() {
@@ -77,7 +85,8 @@ export default {
       if (this.hoveredPolygon == null) {
         return data;
       }
-      data.title = this.areas.byId[this.hoveredPolygon.areaId].name;
+      const area = this.areas.byId[this.hoveredPolygon.areaId];
+      data.title = `${area.number} - ${area.name}`;
       return data;
     },
   },
@@ -87,6 +96,7 @@ export default {
       this.loadGoogleMaps(),
     ]);
     this.drawMap();
+    this.initDrawingManager();
   },
   methods: {
     async loadGoogleMaps() {
@@ -107,48 +117,58 @@ export default {
         lng: 31.235288,
       });
       this.map.setZoom(3);
+      this.areas.data.forEach((area) => {
+        this.polygonsByAreaId[area.id] = [];
+        if (area.geometry == null || area.geometry.type !== 'MultiPolygon') {
+          return;
+        }
+        area.geometry.coordinates.forEach((polygon) => {
+          const paths = polygon.map(line => line.map(point => ({
+            lat: point[0],
+            lng: point[1],
+          })));
+          const newPolygon = new this.google.maps.Polygon({
+            ...polygonOptions,
+            paths,
+          });
+          newPolygon.setMap(this.map);
+          this.initPolygon(newPolygon, area);
+        });
+      });
+    },
+    initDrawingManager() {
       this.drawingManager = new this.google.maps.drawing.DrawingManager({
         drawingMode: null,
         drawingControl: false,
-        polygonOptions: {
-          strokeColor: 'black',
-          strokeOpacity: 1,
-          strokeWeight: 3,
-          fillColor: 'gray',
-          fillOpacity: 0.8,
-          zIndex: 1,
-        },
+        polygonOptions,
       });
       this.drawingManager.setMap(this.map);
       this.google.maps.event.addListener(this.drawingManager, 'polygoncomplete', (polygon) => {
-        const shape = polygon.getPath()
-          .getArray()
-          .map(point => ({
-            lat: point.lat(),
-            lng: point.lng(),
-          }));
+        this.cancelDrawPolygon();
         if (this.areaSelected == null) {
           polygon.setMap(null);
-        } else {
-          // eslint-disable-next-line no-param-reassign
-          polygon.areaId = this.areaSelected;
-          this.polygonsByAreaId[this.areaSelected].push(polygon);
-          this.google.maps.event.addListener(polygon, 'mouseover', () => {
-            this.hoveredPolygon = polygon;
-          });
-          this.google.maps.event.addListener(polygon, 'mouseout', () => {
-            this.hoveredPolygon = null;
-          });
-          this.$store.dispatch('areas/addPolygonToArea', {
-            area: this.areaSelected,
-            polygon: shape,
-          });
+          return;
         }
-        this.cancelDrawPolygon();
+        const area = this.areas.byId[this.areaSelected];
+        this.initPolygon(polygon, area);
+
+        this.$store.dispatch('areas/addPolygonToArea', {
+          area,
+          polygon,
+        });
       });
-      this.areas.data.forEach((area) => {
-        this.polygonsByAreaId[area.id] = [];
-        // TODO : draw polygon for each area
+    },
+    initPolygon(polygon, area) {
+      // eslint-disable-next-line no-param-reassign
+      polygon.areaId = area.id;
+      this.polygonsByAreaId[area.id].push(polygon);
+      this.google.maps.event.addListener(polygon, 'mouseover', () => {
+        this.hoveredPolygon = polygon;
+      });
+      this.google.maps.event.addListener(polygon, 'mouseout', () => {
+        if (this.hoveredPolygon === polygon) {
+          this.hoveredPolygon = null;
+        }
       });
     },
     drawPolygon() {
