@@ -2,7 +2,7 @@ import Dashboard from '@/layout/components/Dashboard.vue';
 import Home from '@/layout/components/Home.vue';
 import NotFound from '@/layout/components/NotFound.vue';
 import router from '@/router';
-import Editor from '@/editor/Editor.vue';
+import Editor from '@/areas/Editor.vue';
 import store from '@/store';
 
 router.addRoutes([

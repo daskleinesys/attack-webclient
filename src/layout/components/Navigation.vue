@@ -68,10 +68,11 @@ export default {
   position: relative;
   height: 50px;
   cursor: pointer;
+  color: $gray-100;
 }
 
 .navigation__item--active {
-  background-color: $gray-700;
+  color: $teal;
 }
 
 .navigation__item:hover {
@@ -84,7 +85,6 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 25px;
-  color: $gray-100;
 }
 
 .navigation__item--toggle:hover {

@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import VuexPersistence from 'vuex-persist';
 
 import auth, { reducer } from '@/auth';
+import areas from '@/areas/store';
 
 Vue.use(Vuex);
 
@@ -23,7 +24,11 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     auth,
+    areas,
   },
-  getters: {},
+  getters: {
+    // DATA
+    areas: state => state.areas.data,
+  },
   plugins: [persistAuth.plugin],
 });
