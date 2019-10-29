@@ -22,16 +22,28 @@
         Cancel Polygon
       </BButton>
     </aside>
-    <div
-      class="editor__map-container"
-      ref="editor__map-container"
-    ></div>
+    <div class="editor__map-wrapper">
+      <MapItemTooltip
+        v-if="this.map != null"
+        :map="this.map"
+        :polygon="hoveredPolygon"
+      >
+        <div class="editor__polygon-tooltip">
+          {{ polygonTooltipData.title }}
+        </div>
+      </MapItemTooltip>
+      <div
+        class="editor__map-container"
+        ref="editor__map-container"
+      ></div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 
+import MapItemTooltip from '@/shared/components/MapItemTooltip.vue';
 import googleMapsApi from '@/shared/modules/googleMapsApi';
 
 export default {
@@ -42,12 +54,14 @@ export default {
       map: null,
       drawingManger: null,
       polygonsByAreaId: {},
+      hoveredPolygon: null,
 
       // controls
       areaSelected: null,
       drawingPolygon: false,
     };
   },
+  components: { MapItemTooltip },
   computed: {
     ...mapGetters(['areas']),
     areaOptions() {
@@ -55,6 +69,16 @@ export default {
         value: area.id,
         text: `${area.number} - ${area.name}`,
       }));
+    },
+    polygonTooltipData() {
+      const data = {
+        title: '',
+      };
+      if (this.hoveredPolygon == null) {
+        return data;
+      }
+      data.title = this.areas.byId[this.hoveredPolygon.areaId].name;
+      return data;
     },
   },
   async created() {
@@ -106,7 +130,15 @@ export default {
         if (this.areaSelected == null) {
           polygon.setMap(null);
         } else {
+          // eslint-disable-next-line no-param-reassign
+          polygon.areaId = this.areaSelected;
           this.polygonsByAreaId[this.areaSelected].push(polygon);
+          this.google.maps.event.addListener(polygon, 'mouseover', () => {
+            this.hoveredPolygon = polygon;
+          });
+          this.google.maps.event.addListener(polygon, 'mouseout', () => {
+            this.hoveredPolygon = null;
+          });
           this.$store.dispatch('areas/addPolygonToArea', {
             area: this.areaSelected,
             polygon: shape,
@@ -151,7 +183,17 @@ export default {
   margin-bottom: 5px;
 }
 
+.editor__map-wrapper {
+  display: flex;
+  flex: 1;
+}
+
 .editor__map-container {
   flex: 1;
+}
+
+.editor__polygon-tooltip {
+  text-align: left;
+  white-space: nowrap;
 }
 </style>
