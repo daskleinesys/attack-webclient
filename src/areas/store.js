@@ -25,9 +25,11 @@ const areas = {
       if (area.geometry != null && area.geometry.type === 'MultiPolygon') {
         geometry.coordinates = JSON.parse(JSON.stringify(area.geometry.coordinates));
       }
-      geometry.coordinates.push([polygon.getPath()
+      const line = polygon.getPath()
         .getArray()
-        .map(point => [point.lat, point.lng])]);
+        .map(point => [point.lat(), point.lng()]);
+      line.push(line[0]);
+      geometry.coordinates.push([line]);
       dispatch('updateById', {
         id: area.id,
         geometry,
