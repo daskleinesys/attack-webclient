@@ -16,10 +16,17 @@
       </BButton>
       <BButton
         class="editor__control"
-        :disabled="!drawingPolygon"
-        @click="cancelDrawPolygon"
+        :variant="editingPolygon ? 'primary' : ''"
+        @click="editPolygon"
       >
-        Cancel Polygon
+        Edit Polygon
+      </BButton>
+      <BButton
+        class="editor__control"
+        :disabled="!drawingPolygon && ! editingPolygon"
+        @click="cancelPolygonActions"
+      >
+        Cancel Action
       </BButton>
     </aside>
     <div class="editor__map-wrapper">
@@ -52,6 +59,8 @@ const polygonOptions = {
   strokeWeight: 2,
   fillColor: '#e9ecef',
   fillOpacity: 0.8,
+  editable: false,
+  clickable: true,
 };
 const activeFillColor = '#007bff';
 const hoveredFillColor = '#6c757d';
@@ -69,6 +78,7 @@ export default {
       // controls
       areaSelected: null,
       drawingPolygon: false,
+      editingPolygon: false,
     };
   },
   components: { MapItemTooltip },
@@ -150,7 +160,7 @@ export default {
       });
       this.drawingManager.setMap(this.map);
       this.google.maps.event.addListener(this.drawingManager, 'polygoncomplete', (polygon) => {
-        this.cancelDrawPolygon();
+        this.cancelPolygonActions();
         if (this.areaSelected == null) {
           polygon.setMap(null);
           return;
@@ -184,26 +194,39 @@ export default {
       });
     },
     drawPolygon() {
-      this.cancelDrawPolygon();
+      this.cancelPolygonActions();
       this.drawingManager.setDrawingMode(this.google.maps.drawing.OverlayType.POLYGON);
       this.drawingPolygon = true;
     },
-    cancelDrawPolygon() {
+    editPolygon() {
+      this.cancelPolygonActions();
+      this.editingPolygon = true;
+      this.updatePolygons();
+    },
+    cancelPolygonActions() {
       this.drawingManager.setDrawingMode(null);
       this.drawingPolygon = false;
+      this.editingPolygon = false;
     },
     updatePolygons() {
       this.polygons.forEach((polygon) => {
         const options = {
           ...polygonOptions,
         };
+        if (polygon.areaId === this.areaSelected) {
+          options.fillColor = activeFillColor;
+        }
+        if (
+          polygon.areaId === this.areaSelected
+          && this.editingPolygon
+        ) {
+          options.editable = true;
+        }
         if (
           this.hoveredPolygon != null
           && polygon.areaId === this.hoveredPolygon.areaId
         ) {
           options.fillColor = hoveredFillColor;
-        } else if (polygon.areaId === this.areaSelected) {
-          options.fillColor = activeFillColor;
         }
         polygon.setOptions(options);
       });
