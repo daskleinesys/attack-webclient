@@ -47,12 +47,14 @@ import MapItemTooltip from '@/shared/components/MapItemTooltip.vue';
 import googleMapsApi from '@/shared/modules/googleMapsApi';
 
 const polygonOptions = {
-  strokeColor: 'black',
+  strokeColor: '#343a40',
   strokeOpacity: 1,
   strokeWeight: 2,
-  fillColor: 'gray',
+  fillColor: '#e9ecef',
   fillOpacity: 0.8,
 };
+const activeFillColor = '#007bff';
+const hoveredFillColor = '#6c757d';
 
 export default {
   name: 'Editor',
@@ -61,7 +63,7 @@ export default {
       google: null,
       map: null,
       drawingManger: null,
-      polygonsByAreaId: {},
+      polygons: [],
       hoveredPolygon: null,
 
       // controls
@@ -98,6 +100,11 @@ export default {
     this.drawMap();
     this.initDrawingManager();
   },
+  watch: {
+    areaSelected() {
+      this.updatePolygons();
+    },
+  },
   methods: {
     async loadGoogleMaps() {
       this.google = await googleMapsApi();
@@ -118,7 +125,6 @@ export default {
       });
       this.map.setZoom(3);
       this.areas.data.forEach((area) => {
-        this.polygonsByAreaId[area.id] = [];
         if (area.geometry == null || area.geometry.type !== 'MultiPolygon') {
           return;
         }
@@ -151,6 +157,7 @@ export default {
         }
         const area = this.areas.byId[this.areaSelected];
         this.initPolygon(polygon, area);
+        this.updatePolygons();
 
         this.$store.dispatch('areas/addPolygonToArea', {
           area,
@@ -161,13 +168,18 @@ export default {
     initPolygon(polygon, area) {
       // eslint-disable-next-line no-param-reassign
       polygon.areaId = area.id;
-      this.polygonsByAreaId[area.id].push(polygon);
+      this.polygons.push(polygon);
+      this.google.maps.event.addListener(polygon, 'click', () => {
+        this.areaSelected = polygon.areaId;
+      });
       this.google.maps.event.addListener(polygon, 'mouseover', () => {
         this.hoveredPolygon = polygon;
+        this.updatePolygons();
       });
       this.google.maps.event.addListener(polygon, 'mouseout', () => {
         if (this.hoveredPolygon === polygon) {
           this.hoveredPolygon = null;
+          this.updatePolygons();
         }
       });
     },
@@ -179,6 +191,22 @@ export default {
     cancelDrawPolygon() {
       this.drawingManager.setDrawingMode(null);
       this.drawingPolygon = false;
+    },
+    updatePolygons() {
+      this.polygons.forEach((polygon) => {
+        const options = {
+          ...polygonOptions,
+        };
+        if (
+          this.hoveredPolygon != null
+          && polygon.areaId === this.hoveredPolygon.areaId
+        ) {
+          options.fillColor = hoveredFillColor;
+        } else if (polygon.areaId === this.areaSelected) {
+          options.fillColor = activeFillColor;
+        }
+        polygon.setOptions(options);
+      });
     },
   },
 };
