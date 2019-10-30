@@ -1,4 +1,3 @@
-const GOOGLE_MAPS_API_KEY = 'asdf';
 const CALLBACK_NAME = 'googleMapsApiCallback';
 
 let initialized = !!window.google;
@@ -29,8 +28,8 @@ export default function googleMapsApi() {
   script.async = true;
   script.defer = true;
   let src = `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing,geometry&callback=${CALLBACK_NAME}`;
-  if (process.env.VUE_APP_USE_GOOGLE_MAPS_API_KEY) {
-    src += `&key=${GOOGLE_MAPS_API_KEY}`;
+  if (process.env.VUE_APP_GOOGLE_MAPS_API_KEY) {
+    src += `&key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}`;
   }
   script.src = src;
   script.onerror = rejectInitPromise;
