@@ -141,10 +141,12 @@ export default {
           return;
         }
         area.geometry.coordinates.forEach((polygon) => {
-          const paths = polygon.map(line => line.map(point => ({
-            lat: point[0],
-            lng: point[1],
-          })));
+          const paths = polygon.map(line => line
+            .slice(0, -1)
+            .map(point => ({
+              lat: point[0],
+              lng: point[1],
+            })));
           const newPolygon = new this.google.maps.Polygon({
             ...polygonOptions,
             paths,
