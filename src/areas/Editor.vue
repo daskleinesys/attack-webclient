@@ -30,8 +30,8 @@
       </BButton>
       <BButton
         class="editor__control"
-        :disabled="!drawingPolygon && !editingPolygon && !deletingPolygon"
-        @click="cancelPolygonActions"
+        :disabled="!drawingPolygon && !editingPolygon && !deletingPolygon && areaSelected == null"
+        @click="cancelPolygonActions(true)"
       >
         Cancel Action
       </BButton>
@@ -71,8 +71,12 @@ const polygonOptions = {
   editable: false,
   clickable: true,
 };
-const activePolygonOptions = {
+const seaPolygonOptions = {
   fillColor: '#007bff',
+  fillOpacity: 0.2,
+};
+const activePolygonOptions = {
+  fillColor: '#28a745',
 };
 const hoveredPolygonOptions = {
   fillColor: '#6c757d',
@@ -119,7 +123,9 @@ export default {
       }
       const area = this.areas.byId[this.hoveredPolygon.areaId];
       data.title = `${area.number} - ${area.name}`;
-      data.economy = area.economy;
+      if (area.id_type === 1) {
+        data.economy = area.economy;
+      }
       return data;
     },
   },
@@ -209,7 +215,7 @@ export default {
 
       this.google.maps.event.addListener(polygon, 'click', () => {
         if (this.deletingPolygon) {
-          this.polygon.setMap(null);
+          polygon.setMap(null);
           this.polygons = this.polygons.filter(currentPolygon => currentPolygon !== polygon);
           this.updatePolygons();
           this.$store.dispatch('areas/updatePolygonAreas', {
@@ -242,12 +248,14 @@ export default {
       this.updatePolygons();
     },
     deletePolygon() {
-      this.cancelPolygonActions();
-      this.areaSelected = null;
+      this.cancelPolygonActions(true);
       this.deletingPolygon = true;
       this.updatePolygons();
     },
-    cancelPolygonActions() {
+    cancelPolygonActions(deselectArea) {
+      if (deselectArea) {
+        this.areaSelected = null;
+      }
       this.drawingManager.setDrawingMode(null);
       this.drawingPolygon = false;
       this.editingPolygon = false;
@@ -256,6 +264,10 @@ export default {
     updatePolygons() {
       this.polygons.forEach((polygon) => {
         const options = { ...polygonOptions };
+        const area = this.areas.byId[polygon.areaId];
+        if (area.id_type === 2) {
+          Object.assign(options, seaPolygonOptions);
+        }
         if (polygon.areaId === this.areaSelected) {
           Object.assign(options, activePolygonOptions);
           if (this.editingPolygon) {
