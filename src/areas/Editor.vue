@@ -23,7 +23,14 @@
       </BButton>
       <BButton
         class="editor__control"
-        :disabled="!drawingPolygon && ! editingPolygon"
+        :variant="deletingPolygon ? 'primary' : ''"
+        @click="deletePolygon"
+      >
+        Delete Polygon
+      </BButton>
+      <BButton
+        class="editor__control"
+        :disabled="!drawingPolygon && !editingPolygon && !deletingPolygon"
         @click="cancelPolygonActions"
       >
         Cancel Action
@@ -90,6 +97,7 @@ export default {
       areaSelected: null,
       drawingPolygon: false,
       editingPolygon: false,
+      deletingPolygon: false,
     };
   },
   components: { MapItemTooltip },
@@ -200,7 +208,17 @@ export default {
       this.google.maps.event.addListener(polygon.getPath(), 'insert_at', () => this.persistPolygonsForArea(polygon.areaId));
 
       this.google.maps.event.addListener(polygon, 'click', () => {
-        this.areaSelected = polygon.areaId;
+        if (this.deletingPolygon) {
+          this.polygon.setMap(null);
+          this.polygons = this.polygons.filter(currentPolygon => currentPolygon !== polygon);
+          this.updatePolygons();
+          this.$store.dispatch('areas/updatePolygonAreas', {
+            area: this.areas.byId[polygon.areaId],
+            polygons: this.polygons.filter(currentPolygon => currentPolygon.areaId === polygon.areaId),
+          });
+        } else {
+          this.areaSelected = polygon.areaId;
+        }
       });
       this.google.maps.event.addListener(polygon, 'mouseover', () => {
         this.hoveredPolygon = polygon;
@@ -223,10 +241,17 @@ export default {
       this.editingPolygon = true;
       this.updatePolygons();
     },
+    deletePolygon() {
+      this.cancelPolygonActions();
+      this.areaSelected = null;
+      this.deletingPolygon = true;
+      this.updatePolygons();
+    },
     cancelPolygonActions() {
       this.drawingManager.setDrawingMode(null);
       this.drawingPolygon = false;
       this.editingPolygon = false;
+      this.deletingPolygon = false;
     },
     updatePolygons() {
       this.polygons.forEach((polygon) => {
