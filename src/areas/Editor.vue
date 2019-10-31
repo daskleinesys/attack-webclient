@@ -183,6 +183,10 @@ export default {
       // eslint-disable-next-line no-param-reassign
       polygon.areaId = area.id;
       this.polygons.push(polygon);
+
+      this.google.maps.event.addListener(polygon.getPath(), 'set_at', () => this.persistPolygonsForArea(polygon.areaId));
+      this.google.maps.event.addListener(polygon.getPath(), 'insert_at', () => this.persistPolygonsForArea(polygon.areaId));
+
       this.google.maps.event.addListener(polygon, 'click', () => {
         this.areaSelected = polygon.areaId;
       });
@@ -233,6 +237,12 @@ export default {
           options.fillColor = hoveredFillColor;
         }
         polygon.setOptions(options);
+      });
+    },
+    persistPolygonsForArea(areaId) {
+      this.$store.dispatch('areas/updatePolygonAreas', {
+        area: this.areas.byId[areaId],
+        polygons: this.polygons.filter(polygon => polygon.areaId === areaId),
       });
     },
   },
