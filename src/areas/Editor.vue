@@ -52,6 +52,7 @@ import { mapGetters } from 'vuex';
 
 import MapItemTooltip from '@/shared/components/MapItemTooltip.vue';
 import googleMapsApi from '@/shared/modules/googleMapsApi';
+import { mapStylesEditor } from '@/shared/constants';
 
 const polygonOptions = {
   strokeColor: '#343a40',
@@ -121,6 +122,7 @@ export default {
     },
     drawMap() {
       const options = {
+        styles: mapStylesEditor,
         tilt: 0,
         mapTypeId: this.google.maps.MapTypeId.TERRAIN,
         disableDefaultUI: true,
