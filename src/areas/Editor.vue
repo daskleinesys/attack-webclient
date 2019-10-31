@@ -36,7 +36,8 @@
         :polygon="hoveredPolygon"
       >
         <div class="editor__polygon-tooltip">
-          {{ polygonTooltipData.title }}
+          {{ polygonTooltipData.title }}<br>
+          {{ polygonTooltipData.economy }} economy
         </div>
       </MapItemTooltip>
       <div
@@ -94,12 +95,14 @@ export default {
     polygonTooltipData() {
       const data = {
         title: '',
+        economy: null,
       };
       if (this.hoveredPolygon == null) {
         return data;
       }
       const area = this.areas.byId[this.hoveredPolygon.areaId];
       data.title = `${area.number} - ${area.name}`;
+      data.economy = area.economy;
       return data;
     },
   },
