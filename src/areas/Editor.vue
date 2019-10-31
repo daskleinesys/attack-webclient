@@ -60,12 +60,21 @@ const polygonOptions = {
   strokeOpacity: 1,
   strokeWeight: 2,
   fillColor: '#e9ecef',
-  fillOpacity: 0.8,
+  fillOpacity: 0.6,
   editable: false,
   clickable: true,
 };
-const activeFillColor = '#007bff';
-const hoveredFillColor = '#6c757d';
+const activePolygonOptions = {
+  fillColor: '#007bff',
+};
+const hoveredPolygonOptions = {
+  fillColor: '#6c757d',
+  fillOpacity: 1,
+};
+const adjacentPolygonOptions = {
+  fillColor: '#ced4da',
+  fillOpacity: 1,
+};
 
 export default {
   name: 'Editor',
@@ -221,23 +230,22 @@ export default {
     },
     updatePolygons() {
       this.polygons.forEach((polygon) => {
-        const options = {
-          ...polygonOptions,
-        };
+        const options = { ...polygonOptions };
         if (polygon.areaId === this.areaSelected) {
-          options.fillColor = activeFillColor;
-        }
-        if (
-          polygon.areaId === this.areaSelected
-          && this.editingPolygon
-        ) {
-          options.editable = true;
-        }
-        if (
-          this.hoveredPolygon != null
-          && polygon.areaId === this.hoveredPolygon.areaId
-        ) {
-          options.fillColor = hoveredFillColor;
+          Object.assign(options, activePolygonOptions);
+          if (this.editingPolygon) {
+            options.editable = true;
+          }
+          if (this.hoveredPolygon != null && polygon.areaId === this.hoveredPolygon.areaId) {
+            options.fillOpacity = 1;
+          }
+        } else if (this.hoveredPolygon != null) {
+          const hoveredArea = this.areas.byId[this.hoveredPolygon.areaId];
+          if (polygon.areaId === hoveredArea.id) {
+            Object.assign(options, hoveredPolygonOptions);
+          } else if (hoveredArea.adjacentAreas.includes(polygon.areaId)) {
+            Object.assign(options, adjacentPolygonOptions);
+          }
         }
         polygon.setOptions(options);
       });
