@@ -1,40 +1,50 @@
 <template>
   <div class="editor">
     <aside class="editor__controls">
-      <BFormSelect
-        class="editor__control"
-        v-model="areaSelected"
-        :options="areaOptions"
-      />
-      <BButton
-        class="editor__control"
-        :variant="drawingPolygon ? 'primary' : ''"
-        :disabled="areaSelected == null"
-        @click="drawPolygon"
-      >
-        Add Polygon
-      </BButton>
-      <BButton
-        class="editor__control"
-        :variant="editingPolygon ? 'primary' : ''"
-        @click="editPolygon"
-      >
-        Edit Polygon
-      </BButton>
-      <BButton
-        class="editor__control"
-        :variant="deletingPolygon ? 'primary' : ''"
-        @click="deletePolygon"
-      >
-        Delete Polygon
-      </BButton>
-      <BButton
-        class="editor__control"
-        :disabled="!drawingPolygon && !editingPolygon && !deletingPolygon && areaSelected == null"
-        @click="cancelPolygonActions(true)"
-      >
-        Cancel Action
-      </BButton>
+      <div class="editor__controls-top">
+        <BFormSelect
+          class="editor__control"
+          v-model="areaSelected"
+          :options="areaOptions"
+        />
+        <BButton
+          class="editor__control"
+          :variant="drawingPolygon ? 'primary' : ''"
+          :disabled="areaSelected == null"
+          @click="drawPolygon"
+        >
+          Add Polygon
+        </BButton>
+        <BButton
+          class="editor__control"
+          :variant="editingPolygon ? 'primary' : ''"
+          @click="editPolygon"
+        >
+          Edit Polygon
+        </BButton>
+        <BButton
+          class="editor__control"
+          :variant="deletingPolygon ? 'primary' : ''"
+          @click="deletePolygon"
+        >
+          Delete Polygon
+        </BButton>
+        <BButton
+          class="editor__control"
+          :disabled="!drawingPolygon && !editingPolygon && !deletingPolygon && areaSelected == null"
+          @click="cancelPolygonActions(true)"
+        >
+          Cancel Action
+        </BButton>
+      </div>
+      <div>
+        <BButton
+          class="editor__control"
+          @click="exportAreas()"
+        >
+          Export Areas
+        </BButton>
+      </div>
     </aside>
     <div class="editor__map-wrapper">
       <MapItemTooltip
@@ -294,6 +304,36 @@ export default {
         polygons: this.polygons.filter(polygon => polygon.areaId === areaId),
       });
     },
+    exportAreas() {
+      let sqlAreas = 'INSERT INTO `areas` (`id`, `name`, `number`, `coords_map`, `id_type`, `economy`) VALUES\n  ';
+      const areas = [];
+      let sqlAdjacents = '\n\nINSERT INTO `area_is_adjacent` (`id_area1`, `id_area2`) VALUES\n  ';
+      const adjacents = [];
+      this.areas.data.forEach((area) => {
+        let sqlArea = '(';
+        sqlArea += `${area.id}, `;
+        sqlArea += `'${area.name}', `;
+        sqlArea += `${area.number}, `;
+        sqlArea += `ST_GeomFromGeoJSON('${JSON.stringify(area.geometry)}'), `;
+        sqlArea += `${area.id_type}, `;
+        sqlArea += `'${area.economy}'`;
+        sqlArea += ')';
+        areas.push(sqlArea);
+        area.adjacentAreas.forEach((adjacent) => {
+          adjacents.push(`(${area.id}, ${adjacent})`);
+        });
+      });
+      sqlAreas += `${areas.join(',\n  ')};`;
+      sqlAdjacents += `${adjacents.join(',\n  ')};\n`;
+
+      const element = document.createElement('a');
+      element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(sqlAreas)}${encodeURIComponent(sqlAdjacents)}`);
+      element.setAttribute('download', 'areas.sql');
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
   },
 };
 </script>
@@ -308,8 +348,14 @@ export default {
 }
 
 .editor__controls {
+  display: flex;
+  flex-direction: column;
   padding: 5px 5px;
   border-right: 6px solid $gray-800;
+}
+
+.editor__controls-top {
+  flex: 1;
 }
 
 .editor__control {
