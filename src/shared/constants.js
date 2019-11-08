@@ -1,5 +1,8 @@
 export const origin = (process.env.NODE_ENV === 'development') ? process.env.VUE_APP_ORIGIN : window.location.origin;
 
+export const AREA_TYPE_LAND = 1;
+export const AREA_TYPE_SEA = 2;
+
 export const mapStylesEditor = [
   {
     elementType: 'labels',

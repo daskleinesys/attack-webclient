@@ -44,7 +44,9 @@
       >
         <div class="editor__polygon-tooltip">
           {{ polygonTooltipData.title }}<br>
-          {{ polygonTooltipData.economy }} economy
+          <span v-if="polygonTooltipData.economy">
+            {{ polygonTooltipData.economy }} economy
+          </span>
         </div>
       </MapItemTooltip>
       <div
@@ -60,7 +62,7 @@ import { mapGetters } from 'vuex';
 
 import MapItemTooltip from '@/shared/components/MapItemTooltip.vue';
 import googleMapsApi from '@/shared/modules/googleMapsApi';
-import { mapStylesEditor } from '@/shared/constants';
+import { AREA_TYPE_LAND, AREA_TYPE_SEA, mapStylesEditor } from '@/shared/constants';
 
 const polygonOptions = {
   strokeColor: '#343a40',
@@ -72,20 +74,21 @@ const polygonOptions = {
   clickable: true,
 };
 const seaPolygonOptions = {
-  fillColor: '#007bff',
+  fillColor: '#17a2b8',
   fillOpacity: 0.2,
 };
-const activePolygonOptions = {
+const activePolygonOptions = editable => ({
   fillColor: '#28a745',
-};
-const hoveredPolygonOptions = {
-  fillColor: '#6c757d',
+  editable,
+});
+const hoveredPolygonOptions = type => ({
+  fillColor: (type === AREA_TYPE_LAND) ? '#6c757d' : '#0c54cf',
   fillOpacity: 1,
-};
-const adjacentPolygonOptions = {
-  fillColor: '#ced4da',
+});
+const adjacentPolygonOptions = type => ({
+  fillColor: (type === AREA_TYPE_LAND) ? '#ced4da' : '#5994fc',
   fillOpacity: 1,
-};
+});
 
 export default {
   name: 'Editor',
@@ -265,23 +268,21 @@ export default {
       this.polygons.forEach((polygon) => {
         const options = { ...polygonOptions };
         const area = this.areas.byId[polygon.areaId];
-        if (area.id_type === 2) {
+        if (area.id_type === AREA_TYPE_SEA) {
           Object.assign(options, seaPolygonOptions);
         }
+        if (this.hoveredPolygon != null) {
+          if (polygon.areaId === this.hoveredPolygon.areaId) {
+            Object.assign(options, hoveredPolygonOptions(area.id_type));
+          }
+          if (this.areas.byId[this.hoveredPolygon.areaId].adjacentAreas.includes(polygon.areaId)) {
+            Object.assign(options, adjacentPolygonOptions(area.id_type));
+          }
+        }
         if (polygon.areaId === this.areaSelected) {
-          Object.assign(options, activePolygonOptions);
+          Object.assign(options, activePolygonOptions(this.editingPolygon));
           if (this.editingPolygon) {
             options.editable = true;
-          }
-          if (this.hoveredPolygon != null && polygon.areaId === this.hoveredPolygon.areaId) {
-            options.fillOpacity = 1;
-          }
-        } else if (this.hoveredPolygon != null) {
-          const hoveredArea = this.areas.byId[this.hoveredPolygon.areaId];
-          if (polygon.areaId === hoveredArea.id) {
-            Object.assign(options, hoveredPolygonOptions);
-          } else if (hoveredArea.adjacentAreas.includes(polygon.areaId)) {
-            Object.assign(options, adjacentPolygonOptions);
           }
         }
         polygon.setOptions(options);
