@@ -85,23 +85,22 @@ const polygonOptions = type => ({
   strokeColor: '#343a40',
   strokeOpacity: 1,
   strokeWeight: 2,
-  fillColor: (type === AREA_TYPE_LAND) ? '#e9ecef' : '#17a2b8',
-  fillOpacity: (type === AREA_TYPE_LAND) ? 0.6 : 0.2,
+  fillColor: (type === AREA_TYPE_LAND) ? '#6c757d' : '#0c54cf',
+  fillOpacity: 0.3,
   editable: false,
   clickable: true,
 });
 const activePolygonOptions = editable => ({
   fillColor: '#28a745',
+  fillOpacity: 0.6,
   editable,
 });
-const hoveredPolygonOptions = type => ({
-  fillColor: (type === AREA_TYPE_LAND) ? '#6c757d' : '#0c54cf',
+const hoveredPolygonOptions = {
   fillOpacity: 1,
-});
-const adjacentPolygonOptions = type => ({
-  fillColor: (type === AREA_TYPE_LAND) ? '#ced4da' : '#5994fc',
-  fillOpacity: 1,
-});
+};
+const adjacentPolygonOptions = {
+  fillOpacity: 0.8,
+};
 
 export default {
   name: 'Editor',
@@ -285,18 +284,15 @@ export default {
       this.polygons.forEach((polygon) => {
         const area = this.areas.byId[polygon.areaId];
         const options = { ...polygonOptions(area.id_type) };
-        if (this.hoveredPolygon != null) {
-          if (polygon.areaId === this.hoveredPolygon.areaId) {
-            Object.assign(options, hoveredPolygonOptions(area.id_type));
-          }
-          if (this.areas.byId[this.hoveredPolygon.areaId].adjacentAreas.includes(polygon.areaId)) {
-            Object.assign(options, adjacentPolygonOptions(area.id_type));
-          }
-        }
         if (polygon.areaId === this.areaSelected) {
           Object.assign(options, activePolygonOptions(this.editingPolygon));
-          if (this.editingPolygon) {
-            options.editable = true;
+        }
+        if (this.hoveredPolygon != null) {
+          if (polygon.areaId === this.hoveredPolygon.areaId) {
+            Object.assign(options, hoveredPolygonOptions);
+          }
+          if (this.areas.byId[this.hoveredPolygon.areaId].adjacentAreas.includes(polygon.areaId)) {
+            Object.assign(options, adjacentPolygonOptions);
           }
         }
         polygon.setOptions(options);
