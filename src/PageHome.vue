@@ -5,15 +5,7 @@
     </aside>
     <main class="home__content">
       <FormLogin v-if="$store.state.auth.user == null"/>
-      <div v-else>
-        <h5 class="mb-3">Hello {{ $store.state.auth.user }}!</h5>
-        <BButton
-          variant="warning"
-          @click="$store.dispatch('auth/logout')"
-        >
-          Logout
-        </BButton>
-      </div>
+      <UserStatus v-else/>
     </main>
   </Page>
 </template>
@@ -21,10 +13,11 @@
 <script>
 import FormLogin from '@/shared/components/FormLogin.vue';
 import Page from '@/layout/components/Page.vue';
+import UserStatus from '@/shared/components/UserStatus.vue';
 
 export default {
   name: 'PageHome',
-  components: { Page, FormLogin },
+  components: { UserStatus, Page, FormLogin },
 };
 </script>
 

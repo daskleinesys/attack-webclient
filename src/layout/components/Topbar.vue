@@ -7,7 +7,7 @@
 
     </div>
     <div class="topbar__right">
-      <UserStatus/>
+      <UserStatus class="topbar__user"/>
     </div>
   </div>
 </template>
@@ -34,5 +34,9 @@ export default {
 .topbar__right {
   display: flex;
   justify-content: flex-end;
+}
+
+.topbar__user {
+  margin: 20px;
 }
 </style>

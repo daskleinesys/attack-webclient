@@ -1,6 +1,8 @@
 import axios from 'axios';
 import Vue from 'vue';
 
+import router from '@/router';
+
 export const reducer = state => ({
   user: state.user,
   token: state.token,
@@ -49,6 +51,7 @@ export default {
         user: null,
         token: null,
       });
+      router.push({ name: 'home' });
     },
   },
 };
