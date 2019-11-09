@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <Page class="home">
     <aside class="home__aside bg-light">
       <h1 class="home__title">Attack Online</h1>
     </aside>
@@ -15,24 +15,20 @@
         </BButton>
       </div>
     </main>
-  </div>
+  </Page>
 </template>
 
 <script>
 import FormLogin from '@/shared/components/FormLogin.vue';
+import Page from '@/layout/components/Page.vue';
 
 export default {
-  name: 'Home',
-  components: { FormLogin },
+  name: 'PageHome',
+  components: { Page, FormLogin },
 };
 </script>
 
 <style scoped>
-.home {
-  display: flex;
-  flex: 1;
-}
-
 .home__aside {
   position: relative;
   width: 50%;

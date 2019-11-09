@@ -1,8 +1,8 @@
-import Dashboard from '@/layout/components/Dashboard.vue';
-import Home from '@/layout/components/Home.vue';
+import PageEditor from '@/areas/PageEditor.vue';
+import PageGames from '@/games/PageGames.vue';
+import PageHome from '@/PageHome.vue';
 import NotFound from '@/layout/components/NotFound.vue';
 import router from '@/router';
-import Editor from '@/areas/Editor.vue';
 import store from '@/store';
 
 router.addRoutes([
@@ -12,7 +12,7 @@ router.addRoutes([
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component: PageHome,
     meta: {
       navigation: false,
       requiresAuth: false,
@@ -20,19 +20,19 @@ router.addRoutes([
     },
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: Dashboard,
+    path: '/games',
+    name: 'games',
+    component: PageGames,
     meta: {
       navigation: true,
       requiresAuth: true,
-      label: 'Dashboard',
+      label: 'Games',
     },
   },
   {
     path: '/admin/editor',
     name: 'editor',
-    component: Editor,
+    component: PageEditor,
     meta: {
       navigation: true,
       requiresAuth: true,

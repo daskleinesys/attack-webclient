@@ -1,70 +1,75 @@
 <template>
-  <div class="editor">
-    <aside class="editor__controls">
-      <div class="editor__controls-top">
-        <BFormSelect
-          class="editor__control"
-          v-model="areaSelected"
-          :options="areaOptions"
-        />
-        <BButton
-          class="editor__control"
-          :variant="drawingPolygon ? 'primary' : ''"
-          :disabled="areaSelected == null"
-          @click="drawPolygon"
+  <Page class="editor">
+    <template #sidebar>
+      <Navigation/>
+    </template>
+    <template #default>
+      <aside class="editor__controls">
+        <div class="editor__controls-top">
+          <BFormSelect
+            class="editor__control"
+            v-model="areaSelected"
+            :options="areaOptions"
+          />
+          <BButton
+            class="editor__control"
+            :variant="drawingPolygon ? 'primary' : ''"
+            :disabled="areaSelected == null"
+            @click="drawPolygon"
+          >
+            Add Polygon
+          </BButton>
+          <BButton
+            class="editor__control"
+            :variant="editingPolygon ? 'primary' : ''"
+            @click="editPolygon"
+          >
+            Edit Polygon
+          </BButton>
+          <BButton
+            class="editor__control"
+            :variant="deletingPolygon ? 'primary' : ''"
+            @click="deletePolygon"
+          >
+            Delete Polygon
+          </BButton>
+          <BButton
+            class="editor__control"
+            :disabled="!drawingPolygon && !editingPolygon && !deletingPolygon && areaSelected == null"
+            @click="cancelPolygonActions(true)"
+          >
+            Cancel Action
+          </BButton>
+        </div>
+        <div>
+          <BButton
+            class="editor__control"
+            @click="exportAreas()"
+          >
+            Export Areas
+          </BButton>
+        </div>
+      </aside>
+      <div class="editor__map-wrapper">
+        <MapItemTooltip
+          v-if="map != null"
+          :map="map"
+          :polygon="hoveredPolygon"
         >
-          Add Polygon
-        </BButton>
-        <BButton
-          class="editor__control"
-          :variant="editingPolygon ? 'primary' : ''"
-          @click="editPolygon"
-        >
-          Edit Polygon
-        </BButton>
-        <BButton
-          class="editor__control"
-          :variant="deletingPolygon ? 'primary' : ''"
-          @click="deletePolygon"
-        >
-          Delete Polygon
-        </BButton>
-        <BButton
-          class="editor__control"
-          :disabled="!drawingPolygon && !editingPolygon && !deletingPolygon && areaSelected == null"
-          @click="cancelPolygonActions(true)"
-        >
-          Cancel Action
-        </BButton>
-      </div>
-      <div>
-        <BButton
-          class="editor__control"
-          @click="exportAreas()"
-        >
-          Export Areas
-        </BButton>
-      </div>
-    </aside>
-    <div class="editor__map-wrapper">
-      <MapItemTooltip
-        v-if="this.map != null"
-        :map="this.map"
-        :polygon="hoveredPolygon"
-      >
-        <div class="editor__polygon-tooltip">
-          {{ polygonTooltipData.title }}<br>
-          <span v-if="polygonTooltipData.economy">
+          <div class="editor__polygon-tooltip">
+            {{ polygonTooltipData.title }}<br>
+            <span v-if="polygonTooltipData.economy">
             {{ polygonTooltipData.economy }} economy
           </span>
-        </div>
-      </MapItemTooltip>
-      <div
-        class="editor__map-container"
-        ref="editor__map-container"
-      ></div>
-    </div>
-  </div>
+          </div>
+        </MapItemTooltip>
+        <div
+          class="editor__map-container"
+          ref="editor__map-container"
+        ></div>
+      </div>
+    </template>
+  </Page>
 </template>
 
 <script>
@@ -73,6 +78,8 @@ import { mapGetters } from 'vuex';
 import MapItemTooltip from '@/shared/components/MapItemTooltip.vue';
 import googleMapsApi from '@/shared/modules/googleMapsApi';
 import { AREA_TYPE_LAND, AREA_TYPE_SEA, mapStylesEditor } from '@/shared/constants';
+import Page from '@/layout/components/Page.vue';
+import Navigation from '@/layout/components/Navigation.vue';
 
 const polygonOptions = {
   strokeColor: '#343a40',
@@ -117,7 +124,11 @@ export default {
       deletingPolygon: false,
     };
   },
-  components: { MapItemTooltip },
+  components: {
+    Navigation,
+    Page,
+    MapItemTooltip,
+  },
   computed: {
     ...mapGetters(['areas']),
     areaOptions() {

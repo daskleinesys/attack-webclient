@@ -4,7 +4,7 @@
       <RouterLink
         class="navigation__item"
         active-class="navigation__item--active"
-        :to="{ name: 'dashboard' }"
+        :to="{ name: 'games' }"
       >
         <FontAwesomeIcon
           class="navigation__icon"
