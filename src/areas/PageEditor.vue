@@ -77,23 +77,19 @@ import { mapGetters } from 'vuex';
 
 import MapItemTooltip from '@/shared/components/MapItemTooltip.vue';
 import googleMapsApi from '@/shared/modules/googleMapsApi';
-import { AREA_TYPE_LAND, AREA_TYPE_SEA, mapStylesEditor } from '@/shared/constants';
+import { AREA_TYPE_LAND, mapStylesEditor } from '@/shared/constants';
 import Page from '@/layout/components/Page.vue';
 import Navigation from '@/layout/components/Navigation.vue';
 
-const polygonOptions = {
+const polygonOptions = type => ({
   strokeColor: '#343a40',
   strokeOpacity: 1,
   strokeWeight: 2,
-  fillColor: '#e9ecef',
-  fillOpacity: 0.6,
+  fillColor: (type === AREA_TYPE_LAND) ? '#e9ecef' : '#17a2b8',
+  fillOpacity: (type === AREA_TYPE_LAND) ? 0.6 : 0.2,
   editable: false,
   clickable: true,
-};
-const seaPolygonOptions = {
-  fillColor: '#17a2b8',
-  fillOpacity: 0.2,
-};
+});
 const activePolygonOptions = editable => ({
   fillColor: '#28a745',
   editable,
@@ -198,7 +194,7 @@ export default {
               lng: point[1],
             })));
           const newPolygon = new this.google.maps.Polygon({
-            ...polygonOptions,
+            ...polygonOptions(area.id_type),
             paths,
           });
           newPolygon.setMap(this.map);
@@ -210,7 +206,7 @@ export default {
       this.drawingManager = new this.google.maps.drawing.DrawingManager({
         drawingMode: null,
         drawingControl: false,
-        polygonOptions,
+        polygonOptions: polygonOptions(AREA_TYPE_LAND),
       });
       this.drawingManager.setMap(this.map);
       this.google.maps.event.addListener(this.drawingManager, 'polygoncomplete', (polygon) => {
@@ -287,11 +283,8 @@ export default {
     },
     updatePolygons() {
       this.polygons.forEach((polygon) => {
-        const options = { ...polygonOptions };
         const area = this.areas.byId[polygon.areaId];
-        if (area.id_type === AREA_TYPE_SEA) {
-          Object.assign(options, seaPolygonOptions);
-        }
+        const options = { ...polygonOptions(area.id_type) };
         if (this.hoveredPolygon != null) {
           if (polygon.areaId === this.hoveredPolygon.areaId) {
             Object.assign(options, hoveredPolygonOptions(area.id_type));
