@@ -33,5 +33,7 @@ export default {
 .page__content {
   flex: 1;
   display: flex;
+  overflow: auto;
+  overflow-x: hidden;
 }
 </style>
