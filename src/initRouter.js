@@ -14,7 +14,6 @@ router.addRoutes([
     name: 'home',
     component: PageHome,
     meta: {
-      navigation: false,
       requiresAuth: false,
       label: 'Home',
     },
@@ -24,7 +23,6 @@ router.addRoutes([
     name: 'games',
     component: PageGames,
     meta: {
-      navigation: true,
       requiresAuth: true,
       label: 'Games',
     },
@@ -34,7 +32,6 @@ router.addRoutes([
     name: 'editor',
     component: PageEditor,
     meta: {
-      navigation: true,
       requiresAuth: true,
       label: 'Editor',
     },

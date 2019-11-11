@@ -1,7 +1,7 @@
 <template>
   <div class="topbar">
     <div class="topbar__left">
-
+      <h1 class="topbar__page-title h3">{{ title }}</h1>
     </div>
     <div class="topbar__middle">
 
@@ -18,6 +18,17 @@ import UserStatus from '@/shared/components/UserStatus.vue';
 export default {
   name: 'Topbar',
   components: { UserStatus },
+  computed: {
+    title() {
+      if (typeof this.$route.meta.label === 'string') {
+        return this.$route.meta.label;
+      }
+      if (typeof this.$route.meta.label === 'function') {
+        return this.$route.meta.label();
+      }
+      return 'Attack Online';
+    },
+  },
 };
 </script>
 
@@ -34,6 +45,10 @@ export default {
 .topbar__right {
   display: flex;
   justify-content: flex-end;
+}
+
+.topbar__page-title {
+  margin: 20px;
 }
 
 .topbar__user {
