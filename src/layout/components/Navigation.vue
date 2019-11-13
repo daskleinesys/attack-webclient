@@ -12,7 +12,10 @@
         />
       </RouterLink>
     </div>
-    <div class="navigation__admin">
+    <div
+      v-if="showAdminMenu"
+      class="navigation__admin"
+    >
       <RouterLink
         class="navigation__item"
         active-class="navigation__item--active"
@@ -38,6 +41,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faArrowAltCircleRight } from '@fortawesome/free-regular-svg-icons';
 import { faColumns, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 
+import { USER_STATUS } from '@/shared/constants';
+
 library.add(
   faArrowAltCircleRight,
   faColumns, faLayerGroup,
@@ -45,6 +50,11 @@ library.add(
 
 export default {
   name: 'Navigation',
+  computed: {
+    showAdminMenu() {
+      return (this.$store.state.auth.status === USER_STATUS.ADMIN || this.$store.state.auth.status === USER_STATUS.MODERATOR);
+    },
+  },
 };
 </script>
 

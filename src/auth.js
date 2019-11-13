@@ -5,12 +5,14 @@ import { ORIGIN_AUTH } from '@/shared/constants';
 
 export const reducer = state => ({
   user: state.user,
+  status: state.status,
   token: state.token,
 });
 
 export const initialState = () => ({
   fetching: false,
   user: null,
+  status: null,
   token: null,
 });
 
@@ -24,8 +26,9 @@ export default {
     startFetching(state) {
       Vue.set(state, 'fetching', true);
     },
-    setUser(state, { user, token }) {
+    setUser(state, { user, status, token }) {
       Vue.set(state, 'user', user);
+      Vue.set(state, 'status', status);
       Vue.set(state, 'token', token);
       Vue.set(state, 'fetching', false);
     },
@@ -41,11 +44,13 @@ export default {
           username,
           password,
         });
-        if (!state.fetching) {
+        if (!state.fetching || typeof data !== 'string') {
           return;
         }
+        const payload = JSON.parse(atob(decodeURIComponent(data.split('.')[1])));
         commit('setUser', {
-          user: username,
+          user: payload.sub,
+          status: payload.status,
           token: data,
         });
       } catch (e) {

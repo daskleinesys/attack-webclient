@@ -3,6 +3,14 @@ export const ORIGIN_API = (typeof process.env.VUE_APP_ATTACK_ORIGIN_API === 'str
 export const ORIGIN_AUTH = (typeof process.env.VUE_APP_ATTACK_ORIGIN_AUTH === 'string')
   ? process.env.VUE_APP_ATTACK_ORIGIN_AUTH : window.location.origin;
 
+export const USER_STATUS = {
+  INACTIVE: 'inactive',
+  ACTIVE: 'active',
+  MODERATOR: 'moderator',
+  ADMIN: 'admin',
+  DELETED: 'deleted',
+};
+
 export const AREA_TYPE_LAND = 1;
 export const AREA_TYPE_SEA = 2;
 
