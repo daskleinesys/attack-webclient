@@ -14,6 +14,13 @@ export const USER_STATUS = {
 export const AREA_TYPE_LAND = 1;
 export const AREA_TYPE_SEA = 2;
 
+export const GAME_STATUS = {
+  NEW: 'new',
+  STARTED: 'started',
+  RUNNING: 'running',
+  DONE: 'done',
+};
+
 export const mapStylesEditor = [
   {
     elementType: 'labels',

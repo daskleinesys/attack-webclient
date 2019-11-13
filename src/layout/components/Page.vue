@@ -33,6 +33,7 @@ export default {
 .page__content {
   flex: 1;
   display: flex;
+  padding-right: 17px;
   overflow: auto;
   overflow-x: hidden;
 }
