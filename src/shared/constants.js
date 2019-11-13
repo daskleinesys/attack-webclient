@@ -1,4 +1,7 @@
-export const origin = (process.env.NODE_ENV === 'development') ? process.env.VUE_APP_ORIGIN : window.location.origin;
+export const ORIGIN_API = (typeof process.env.VUE_APP_ATTACK_ORIGIN_API === 'string')
+  ? process.env.VUE_APP_ATTACK_ORIGIN_API : window.location.origin;
+export const ORIGIN_AUTH = (typeof process.env.VUE_APP_ATTACK_ORIGIN_AUTH === 'string')
+  ? process.env.VUE_APP_ATTACK_ORIGIN_AUTH : window.location.origin;
 
 export const AREA_TYPE_LAND = 1;
 export const AREA_TYPE_SEA = 2;

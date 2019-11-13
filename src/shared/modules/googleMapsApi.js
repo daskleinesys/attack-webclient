@@ -28,8 +28,8 @@ export default function googleMapsApi() {
   script.async = true;
   script.defer = true;
   let src = `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing,geometry&callback=${CALLBACK_NAME}`;
-  if (process.env.VUE_APP_GOOGLE_MAPS_API_KEY) {
-    src += `&key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}`;
+  if (typeof process.env.VUE_APP_ATTACK_GOOGLE_MAPS_API_KEY === 'string') {
+    src += `&key=${process.env.VUE_APP_ATTACK_GOOGLE_MAPS_API_KEY}`;
   }
   script.src = src;
   script.onerror = rejectInitPromise;

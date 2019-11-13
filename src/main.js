@@ -9,7 +9,7 @@ import router from '@/router';
 import store from '@/store';
 import '@/initRouter';
 
-import { origin } from '@/shared/constants';
+import { ORIGIN_API } from '@/shared/constants';
 
 import App from '@/App.vue';
 
@@ -38,7 +38,7 @@ Vue.filter('numbro', (value, options) => {
 /**
  * add axios interceptor to check for logout
  */
-axios.defaults.baseURL = origin;
+axios.defaults.baseURL = ORIGIN_API;
 axios.interceptors.request.use((config) => {
   const headers = {
     'content-type': 'application/json',
@@ -53,6 +53,12 @@ axios.interceptors.request.use((config) => {
       ...headers,
     },
   };
+});
+axios.interceptors.response.use(response => response, async (error) => {
+  if (error.response && error.response.status === 401) {
+    store.dispatch('auth/logout');
+  }
+  throw error;
 });
 
 /**

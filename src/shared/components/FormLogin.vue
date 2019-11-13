@@ -66,7 +66,6 @@ export default {
         return null;
       }
       return this.username.length >= 3;
-
     },
     statePassword() {
       if (this.password == null) {

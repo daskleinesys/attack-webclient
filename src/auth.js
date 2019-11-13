@@ -2,6 +2,7 @@ import axios from 'axios';
 import Vue from 'vue';
 
 import router from '@/router';
+import { ORIGIN_AUTH } from '@/shared/constants';
 
 export const reducer = state => ({
   user: state.user,
@@ -34,7 +35,7 @@ export default {
       }
       commit('startFetching');
       try {
-        const { data } = await axios.post('http://localhost:3000/login', {
+        const { data } = await axios.post(`${ORIGIN_AUTH}/login`, {
           username,
           password,
         });
