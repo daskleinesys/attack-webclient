@@ -1,10 +1,9 @@
 <template>
   <div class="topbar">
     <div class="topbar__left">
-      <h1 class="topbar__page-title h3">{{ title }}</h1>
+      <h1 class="topbar__page-title text-primary">{{ title }}</h1>
     </div>
     <div class="topbar__middle">
-
     </div>
     <div class="topbar__right">
       <UserStatus class="topbar__user"/>
@@ -38,20 +37,26 @@ export default {
 }
 
 .topbar__left,
+.topbar__middle,
 .topbar__right {
-  flex: 1
+  display: flex;
+  align-items: center;
+}
+
+.topbar__left,
+.topbar__right {
+  flex: 1;
 }
 
 .topbar__right {
-  display: flex;
   justify-content: flex-end;
 }
 
 .topbar__page-title {
-  margin: 20px;
+  margin: 15px 10px;
 }
 
 .topbar__user {
-  margin: 20px;
+  margin: 10px;
 }
 </style>

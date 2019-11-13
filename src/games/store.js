@@ -1,24 +1,24 @@
 import subscribableDataStore, { initialState as initialStateSubscribableDataStore } from '@/shared/storeMixins/subscribableDataStore';
-import updatableDataStore, { initialState as initialStateUpdatableDataStore } from '@/shared/storeMixins/updatableDataStore';
+import insertableDataStore, { initialState as initialStateInsertableDataStore } from '@/shared/storeMixins/insertableDataStore';
 
 const subscribable = subscribableDataStore('/api/games');
-const updatable = updatableDataStore('/api/games');
+const insertable = insertableDataStore('/api/games');
 
 export default {
   namespaced: true,
   state: {
     ...subscribable.state,
-    ...updatable.state,
+    ...insertable.state,
   },
   mutations: {
     ...subscribable.mutations,
-    ...updatable.mutations,
+    ...insertable.mutations,
     reset(state) {
-      Object.assign(state, initialStateSubscribableDataStore(), initialStateUpdatableDataStore());
+      Object.assign(state, initialStateSubscribableDataStore(), initialStateInsertableDataStore());
     },
   },
   actions: {
     ...subscribable.actions,
-    ...updatable.actions,
+    ...insertable.actions,
   },
 };

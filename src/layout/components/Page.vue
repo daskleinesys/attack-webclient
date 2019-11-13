@@ -3,6 +3,7 @@
     <slot name="sidebar"/>
     <div class="page__main">
       <slot name="topbar"/>
+      <slot name="contentbar"/>
       <div class="page__content">
         <slot name="default"/>
       </div>

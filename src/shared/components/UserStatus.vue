@@ -1,7 +1,7 @@
 <template>
   <BDropdown
     class="user-status"
-    variant="outline-primary"
+    variant="outline-dark"
     :text="$store.state.auth.user"
   >
     <BDropdownItem @click="$store.dispatch('logout')">logout</BDropdownItem>

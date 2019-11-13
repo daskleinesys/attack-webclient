@@ -1,5 +1,5 @@
 <template>
-  <nav class="navigation">
+  <nav class="navigation bg-primary">
     <div class="navigation__main">
       <RouterLink
         class="navigation__item"
@@ -8,7 +8,7 @@
       >
         <FontAwesomeIcon
           class="navigation__icon"
-          icon="columns"
+          icon="th-list"
         />
       </RouterLink>
     </div>
@@ -39,13 +39,13 @@
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faArrowAltCircleRight } from '@fortawesome/free-regular-svg-icons';
-import { faColumns, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import { faThList, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 
 import { USER_STATUS } from '@/shared/constants';
 
 library.add(
   faArrowAltCircleRight,
-  faColumns, faLayerGroup,
+  faThList, faLayerGroup,
 );
 
 export default {
@@ -66,7 +66,6 @@ export default {
   display: flex;
   flex-direction: column;
   width: 50px;
-  background: $gray-600;
 }
 
 .navigation__main {
