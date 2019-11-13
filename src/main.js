@@ -56,7 +56,7 @@ axios.interceptors.request.use((config) => {
 });
 axios.interceptors.response.use(response => response, async (error) => {
   if (error.response && error.response.status === 401) {
-    store.dispatch('auth/logout');
+    store.dispatch('logout');
   }
   throw error;
 });

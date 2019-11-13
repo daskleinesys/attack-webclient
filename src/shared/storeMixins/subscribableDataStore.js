@@ -11,7 +11,7 @@ export function initialState() {
   };
 }
 
-export function subscribableDataStore(dataUrl) {
+export default function subscribableDataStore(dataUrl) {
   return {
     namespaced: true,
     state: initialState(),

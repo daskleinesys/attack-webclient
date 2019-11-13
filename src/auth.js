@@ -1,7 +1,6 @@
 import axios from 'axios';
 import Vue from 'vue';
 
-import router from '@/router';
 import { ORIGIN_AUTH } from '@/shared/constants';
 
 export const reducer = state => ({
@@ -19,6 +18,9 @@ export default {
   namespaced: true,
   state: initialState(),
   mutations: {
+    reset(state) {
+      Object.assign(state, initialState());
+    },
     startFetching(state) {
       Vue.set(state, 'fetching', true);
     },
@@ -39,6 +41,9 @@ export default {
           username,
           password,
         });
+        if (!state.fetching) {
+          return;
+        }
         commit('setUser', {
           user: username,
           token: data,
@@ -46,13 +51,6 @@ export default {
       } catch (e) {
         dispatch('logout');
       }
-    },
-    logout({ commit }) {
-      commit('setUser', {
-        user: null,
-        token: null,
-      });
-      router.push({ name: 'home' });
     },
   },
 };

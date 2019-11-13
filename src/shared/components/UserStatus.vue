@@ -4,7 +4,7 @@
     variant="outline-primary"
     :text="$store.state.auth.user"
   >
-    <BDropdownItem @click="$store.dispatch('auth/logout')">logout</BDropdownItem>
+    <BDropdownItem @click="$store.dispatch('logout')">logout</BDropdownItem>
   </BDropdown>
 </template>
 

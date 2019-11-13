@@ -9,7 +9,7 @@ export function initialState() {
   };
 }
 
-export function updatableDataStore(dataUrl) {
+export default function updatableDataStore(dataUrl) {
   return {
     namespaced: true,
     state: initialState(),
