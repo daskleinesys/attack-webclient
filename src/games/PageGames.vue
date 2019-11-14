@@ -121,30 +121,32 @@ export default {
   computed: {
     ...mapGetters(['games']),
     gamesComputed() {
-      return [...this.games.data].sort((a, b) => {
-        if (a.status === b.status) {
+      return [...this.games.data]
+        .reverse()
+        .sort((a, b) => {
+          if (a.status === b.status) {
+            return 0;
+          }
+          if (a.status === GAME_STATUS.NEW) {
+            return -1;
+          }
+          if (b.status === GAME_STATUS.NEW) {
+            return 1;
+          }
+          if (a.status === GAME_STATUS.STARTED) {
+            return -1;
+          }
+          if (b.status === GAME_STATUS.STARTED) {
+            return 1;
+          }
+          if (a.status === GAME_STATUS.DONE) {
+            return 1;
+          }
+          if (b.status === GAME_STATUS.DONE) {
+            return -1;
+          }
           return 0;
-        }
-        if (a.status === GAME_STATUS.NEW) {
-          return -1;
-        }
-        if (b.status === GAME_STATUS.NEW) {
-          return 1;
-        }
-        if (a.status === GAME_STATUS.STARTED) {
-          return -1;
-        }
-        if (b.status === GAME_STATUS.STARTED) {
-          return 1;
-        }
-        if (a.status === GAME_STATUS.DONE) {
-          return 1;
-        }
-        if (b.status === GAME_STATUS.DONE) {
-          return -1;
-        }
-        return 0;
-      });
+        });
     },
   },
   methods: {
