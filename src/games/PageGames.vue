@@ -12,75 +12,26 @@
           <BButton
             class="games__btn-new-game"
             variant="primary"
-            :disabled="newGame != null"
-            @click="onNewGame"
+            :disabled="newGame"
+            @click="newGame = true"
           >
             New Game
           </BButton>
         </template>
       </Contentbar>
     </template>
-    <template #default class="test">
-      <BCard
-        v-if="newGame != null"
-        :img-src="`${publicPath}images/card.jpg`"
-        img-alt="Image"
-        img-top
-        class="games__game-card"
-        :class="{ 'games__game-card--inserting': inserting }"
-      >
-        <BForm @submit="onCreateGame">
-          <BCardTitle>
-            <BFormInput
-              placeholder="New Game"
-              v-model="newGame.name"
-              ref="name"
-              :disabled="inserting"
-            />
-          </BCardTitle>
-          <BFormSelect
-            v-model="newGame.playerslots"
-            class="mb-3"
-            :disabled="inserting"
-          >
-            <option value="2">2 players</option>
-            <option value="6">6 players</option>
-          </BFormSelect>
-          <BButton
-            variant="light"
-            @click="newGame = null"
-            :disabled="inserting"
-          >
-            Cancel
-          </BButton>
-          <BButton
-            variant="primary"
-            style="float: right;"
-            :disabled="newGame.name == null || newGame.name.length < 3 || inserting"
-            type="submit"
-          >
-            Create
-          </BButton>
-        </BForm>
-      </BCard>
-      <BCard
+    <template #default>
+      <BCardNewGame
+        v-if="newGame"
+        :inserting="inserting"
+        @cancel="newGame = false"
+        @create="onCreateGame"
+      />
+      <BCardGame
         v-for="(game, index) in gamesComputed"
         :key="`game-${index}`"
-        :title="game.name"
-        :img-src="`${publicPath}images/card.jpg`"
-        img-alt="Image"
-        img-top
-        class="games__game-card"
-        :class="{ 'games__game-card--done': game.status === gameStatusDone }"
-      >
-        <BButton
-          v-if="game.status === gameStatusNew"
-          variant="primary"
-          style="float: right;"
-        >
-          Join
-        </BButton>
-      </BCard>
+        :game="game"
+      />
     </template>
   </Page>
 </template>
@@ -93,12 +44,14 @@ import Topbar from '@/layout/components/Topbar.vue';
 import Page from '@/layout/components/Page.vue';
 import Contentbar from '@/layout/components/Contentbar.vue';
 import { GAME_STATUS } from '@/shared/constants';
-
-const GAME_STATUS_CREATING = Symbol('creating');
+import BCardNewGame from './components/BCardNewGame.vue';
+import BCardGame from './components/BCardGame.vue';
 
 export default {
   name: 'PageGames',
   components: {
+    BCardGame,
+    BCardNewGame,
     Contentbar,
     Navigation,
     Topbar,
@@ -106,12 +59,7 @@ export default {
   },
   data() {
     return {
-      publicPath: process.env.BASE_URL,
-      gameStatusNew: GAME_STATUS.NEW,
-      gameStatusDone: GAME_STATUS.DONE,
-      gameStatusCreating: GAME_STATUS_CREATING,
-
-      newGame: null,
+      newGame: false,
       inserting: false,
     };
   },
@@ -150,21 +98,10 @@ export default {
     },
   },
   methods: {
-    onNewGame() {
-      if (this.newGame != null) {
-        return;
-      }
-      this.newGame = {
-        name: '',
-        playerslots: 6,
-      };
-      this.$nextTick(() => this.$refs.name.focus());
-    },
-    async onCreateGame(e) {
-      e.preventDefault();
+    async onCreateGame(newGame) {
       this.inserting = true;
-      await this.$store.dispatch('games/insert', this.newGame);
-      this.newGame = null;
+      await this.$store.dispatch('games/insert', newGame);
+      this.newGame = false;
       this.inserting = false;
     },
   },
@@ -176,27 +113,12 @@ export default {
   flex: initial;
   display: flex;
   justify-content: flex-start;
-  align-items: stretch;
-  padding-top: 10px;
-  padding-left: 10px;
+  align-items: flex-start;
   flex-wrap: wrap;
+  padding: 10px;
 }
 
 .games__btn-new-game {
   margin: 15px 10px;
-}
-
-.games__game-card {
-  max-width: 20rem;
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
-
-.games__game-card--done {
-  filter: grayscale(100%);
-}
-
-.games__game-card--inserting {
-  filter: blur(1px);
 }
 </style>
