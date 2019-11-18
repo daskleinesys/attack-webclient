@@ -19,6 +19,7 @@ export const GAME_STATUS = {
   STARTED: 'started',
   RUNNING: 'running',
   DONE: 'done',
+  LOADING: Symbol('LOADING'),
 };
 
 export const mapStylesEditor = [

@@ -47,6 +47,12 @@ import { GAME_STATUS } from '@/shared/constants';
 import BCardNewGame from './components/BCardNewGame.vue';
 import BCardGame from './components/BCardGame.vue';
 
+const dummyGame = {
+  status: GAME_STATUS.LOADING,
+  phase: {},
+  players: [],
+};
+
 export default {
   name: 'PageGames',
   components: {
@@ -69,6 +75,13 @@ export default {
   computed: {
     ...mapGetters(['games']),
     gamesComputed() {
+      if (this.games.fetching) {
+        return [
+          { ...dummyGame },
+          { ...dummyGame },
+          { ...dummyGame },
+        ];
+      }
       return [...this.games.data]
         .reverse()
         .sort((a, b) => {
@@ -110,10 +123,11 @@ export default {
 
 <style scoped>
 /deep/ .page__content {
-  flex: initial;
+  flex: 1;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+  align-content: flex-start;
   flex-wrap: wrap;
   padding: 10px;
 }
