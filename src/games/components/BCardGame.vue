@@ -8,11 +8,11 @@
     :class="{ 'b-card-game--done': game.status === gameStatusDone }"
   >
     <BButton
-      v-if="game.status === gameStatusNew"
+      v-if="labelCta != null"
       variant="primary"
       style="float: right;"
     >
-      Join
+      {{ labelCta }}
     </BButton>
   </BCard>
 </template>
@@ -34,6 +34,24 @@ export default {
       gameStatusNew: GAME_STATUS.NEW,
       gameStatusDone: GAME_STATUS.DONE,
     };
+  },
+  computed: {
+    labelCta() {
+      if (this.game.status !== GAME_STATUS.NEW) {
+        return 'view';
+      }
+      const { user } = this.$store.state.auth;
+      const inGame = this.game.players.some(player => player.user.login === user);
+      const isFull = this.game.players.length === this.game.playerslots;
+      const isCreator = this.game.creator.login === user;
+      if (isCreator && isFull) {
+        return 'start';
+      }
+      if (!inGame && !isFull) {
+        return 'join';
+      }
+      return null;
+    },
   },
 };
 </script>
