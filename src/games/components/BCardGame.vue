@@ -2,6 +2,7 @@
   <BCard
     no-body
     class="b-card-game"
+    :class="{ 'b-card-new-game--deleting': deleting === game.id }"
   >
     <div
       v-if="game.status === gameStatusLoading"
@@ -43,6 +44,8 @@
       <div class="b-card-game__buttons">
         <BButton
           v-if="labelCancel != null"
+          @click="onCancel"
+          :disabled="deleting != null"
         >
           {{ labelCancel }}
         </BButton>
@@ -86,6 +89,9 @@ export default {
     };
   },
   computed: {
+    deleting() {
+      return this.$store.state.games.deleting;
+    },
     user() {
       return this.$store.state.auth.user;
     },
@@ -144,6 +150,18 @@ export default {
       return null;
     },
   },
+  methods: {
+    onCancel() {
+      if (this.game.status !== GAME_STATUS.NEW) {
+        return;
+      }
+      if (this.isCreator) {
+        this.$store.dispatch('games/delete', this.game);
+      } else {
+        this.$store.dispatch('games/leave', this.game);
+      }
+    },
+  },
 };
 </script>
 
@@ -153,6 +171,10 @@ export default {
   max-width: 280px;
   min-height: 300px;
   margin: 10px;
+}
+
+.b-card-new-game--deleting {
+  filter: blur(1px);
 }
 
 .b-card-game__image-placeholder {
