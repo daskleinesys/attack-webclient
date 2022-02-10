@@ -41,7 +41,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "googlemaps-js-api-stub": "^0.1.0",
     "jest": "^24.5.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.21"
   }
